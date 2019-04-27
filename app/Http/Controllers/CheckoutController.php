@@ -72,8 +72,8 @@ class CheckoutController extends Controller
 
         try {
             $charge = Stripe::charges()->create([
-                'amount' => getNumbers()->get('newTotal') / 100,
-                'currency' => 'CAD',
+                'amount' => getNumbers()->get('newTotal'),
+                'currency' => 'TWD',
                 'source' => $request->stripeToken,
                 'description' => 'Order',
                 'receipt_email' => $request->email,
@@ -123,7 +123,7 @@ class CheckoutController extends Controller
         $nonce = $request->payment_method_nonce;
 
         $result = $gateway->transaction()->sale([
-            'amount' => round(getNumbers()->get('newTotal') / 100, 2),
+            'amount' => round(getNumbers()->get('newTotal'), 0),
             'paymentMethodNonce' => $nonce,
             'options' => [
                 'submitForSettlement' => true

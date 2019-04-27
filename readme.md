@@ -1,46 +1,149 @@
-![Laravel Ecommerce Example](https://user-images.githubusercontent.com/4316355/36414878-d41987b2-15f1-11e8-9f2c-6c3a68e4a14b.gif)
+## 利用 Laravel + Voyager 架設的平臺
 
-# Laravel Ecommerce Example
+原始來源：https://github.com/drehimself/laravel-ecommerce-example
 
-Code for YouTube video series: [https://www.youtube.com/watch?v=o5PWIuDTgxg&list=PLEhEHUEU3x5oPTli631ZX9cxl6cU_sDaR](https://www.youtube.com/watch?v=o5PWIuDTgxg&list=PLEhEHUEU3x5oPTli631ZX9cxl6cU_sDaR)
+改版的來源：https://github.com/zivhsiao/ecommerce-example.git
 
-Website Demo: [https://laravelecommerceexample.ca](https://laravelecommerceexample.ca). The demo has limited permissions. Install locally for full access.
+爲什麼採取別人的 git 再 fork 給自己
 
-## Installation
+因爲學習別人的做法，才能讓自己更加精進，來彌補自己所沒有辦法的部分，才會找個比較快速的方法
 
-1. Clone the repo and `cd` into it
-1. `composer install`
-1. Rename or copy `.env.example` file to `.env`
-1. `php artisan key:generate`
-1. Set your database credentials in your `.env` file
-1. Set your Stripe credentials in your `.env` file. Specifically `STRIPE_KEY` and `STRIPE_SECRET`
-1. Set your Algolia credentials in your `.env` file. Specifically `ALGOLIA_APP_ID` and `ALGOLIA_SECRET`. See [this episode](https://www.youtube.com/watch?v=Sa0R_2aHICw&index=22&list=PLEhEHUEU3x5oPTli631ZX9cxl6cU_sDaR).
-1. Set your Braintree credentials in your `.env` file if you want to use PayPal. Specifically `BT_MERCHANT_ID`, `BT_PUBLIC_KEY`, `BT_PRIVATE_KEY`. See [this episode](https://www.youtube.com/watch?v=pv8pxwBxfA4). If you don't, it should still work but won't show the paypal payment at checkout.
-1. Set your `APP_URL` in your `.env` file. This is needed for Voyager to correctly resolve asset URLs.
-1. Set `ADMIN_PASSWORD` in your `.env` file if you want to specify an admin password. If not, the default password is 'password'
-1. `php artisan ecommerce:install`. This will migrate the database and run any seeders necessary. See [this episode](https://www.youtube.com/watch?v=L3EbWJmmyjo&index=18&list=PLEhEHUEU3x5oPTli631ZX9cxl6cU_sDaR).
-1. `npm install`
-1. `npm run dev`
-1. `php artisan serve` or use Laravel Valet or Laravel Homestead
-1. Visit `localhost:8000` in your browser
-1. Visit `/admin` if you want to access the Voyager admin backend. Admin User/Password: `admin@admin.com/password`. Admin Web User/Password: `adminweb@adminweb.com/password`
+它是使用 Stripe，目前是有支援臺灣的部分，它的幣別是 TWD
+只是 Stripe 不行在臺灣開戶，最近的是香港，我們用它在於測試用並且檢查卡號是否正常
 
-## Shopping Cart Package
+他會依照當下的匯率來換算 USD，所以在它的測試數據中只有 USD
 
-I originally used the [Crinsane/LaravelShoppingcart](https://github.com/Crinsane/LaravelShoppingcart) package but it is slow to update to the latest versions of Laravel. I now use [hardevine/LaravelShoppingcart](https://github.com/hardevine/LaravelShoppingcart) which is a forked version that updates quicker.
+#### 這是測試卡號
+| 卡號 | 月/年 CVC | 說明 |
+| --- | --- | --- |
+| 4242 4242 4242 4242 | 04/24 242 | Visa |
+| 4000 0000 0000 0069 | 04/24 242 | 過期卡測試 |
 
-## Windows Users - money_format() issue
 
-The `money_format` function does not work in Windows. Take a look at [this thread](https://stackoverflow.com/questions/6369887/alternative-to-money-format-function-in-php-on-windows-platform/18990145). As an alternative, just use the `number_format` function instead.
+## 準備讓網站動起來
 
-1. In `app/helpers.php` replace `money_format` line with `return '$'.number_format($price / 100, 2);`
-1. In `app/Product.php` replace `money_format` line with `return '$'.number_format($this->price / 100, 2);`
-1. In `config/cart.php` set the `thousand_seperator` to an empty string or you might get a 'non well formed numeric value encountered' error. It conflicts with `number_format`.
+先把它 git clone 下來一份，然後照着指令一步一步往下做
 
-## Starting from a particular point
+```
+git clone https://github.com/zivhsiao/ecommerce-example.git
+```
 
-If you would like to follow along from a particular point, follow these instructions. I'm going to be starting from my starting point in the first video of the series. You can choose any point by replacing the hash with [any particular commit](https://github.com/drehimself/laravel-ecommerce-example/commits/master).
+![git clone](https://raw.githubusercontent.com/zivhsiao/repo-picture-1/master/images/laravel_ecommerce/git_clone.png)
 
-1. Clone the repo and `cd` into it
-1. `git checkout f4f651a8a35ebb2ff38ba15771fd65c93051f942`
-1. Follow the rest of the steps above. Instead of `php artisan ecommerce:install`, migrate and seed the normal way with `php artisan migrate --seed`
+再來就是 composer install
+
+```
+composer install
+```
+
+![composer install](https://raw.githubusercontent.com/zivhsiao/repo-picture-1/master/images/laravel_ecommerce/composer_install.png)
+
+
+跑完的話，要先吧 .env 給複製一份，然後繼續
+
+
+```
+cp .env.example .env
+
+php artisan key:generate
+```
+
+
+然後修改 .env，這裏有幾個地方需要注意
+
+```
+# 這一定要設立
+APP_URL=http://ecommerce-example.localhost:8888
+
+# 因爲我採取 MAMP 去架設起來
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=8889
+DB_DATABASE=demo_ecommerce
+DB_USERNAME=root
+DB_PASSWORD=hezrid5
+DB_SOCKET=/Applications/MAMP/tmp/mysql/mysql.sock
+
+# mail 的部分是採取 mailtrap，只有我自己看得到
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_FROM_ADDRESS=service@localhost
+MAIL_FROM_NAME=Service
+MAIL_ENCRYPTION=tls
+
+# Stripe 的 api, secret，現在只能用測試
+STRIPE_KEY=pk_test_xxxxxxxxxxxxxxx
+STRIPE_SECRET=sk_test_xxxxxxxxxxxxxxx
+
+# Algolia 這個可以不要，有的話更好
+ALGOLIA_APP_ID=G0xxxxxx
+ALGOLIA_SECRET=76xxxxxxxxxxxxxxxx
+```
+
+如果到這裏的話，沒有問題就下指令吧，這是它封裝的 ecommerce 直接 install，如果有 mysql 的問題，就回過頭來檢查看看，然後再重新執行
+
+```
+php artisan ecommerce:install
+```
+
+![composer install](https://raw.githubusercontent.com/zivhsiao/repo-picture-1/master/images/laravel_ecommerce/php_artisan_ecommerce_install.png)
+
+## 然後修改程式吧！
+
+因爲它的程式預設幣別是 USD，有一些地方要做修改
+
+修改幣別的程式
+- app/helpers.php
+- app/Product.php
+
+```php
+//第一個
+//直接找出來
+return money_format('$%i', $price / 100);
+//用來置換
+return "TWD " . number_format($price );
+
+//第二個
+//直接找出來
+return money_format('$%i', $this->price / 100);
+//用來置換
+return "TWD " . number_format($this->price );
+```
+
+然後去修改 config/cart.php
+```php
+'tax' => 5, // 因爲是臺灣，只有 5% 的稅
+
+'format' => [
+    'decimals' => 0, //小數點後面幾位數字，目前是改爲 0
+    'decimal_point' => '', //小數點的區分符號，目前是空白 
+    'thousand_seperator' => ''
+],
+```
+
+接下來是結賬完成的通知信
+- resources/view/emails/order/placed.blade.php
+
+```php
+**Order Total:** TWD {{ round($order->billing_total) }}
+
+Price: TWD {{ round($product->price)}} <br>
+```
+
+然後測試看看，理論上是沒有問題的了
+
+![composer install](https://raw.githubusercontent.com/zivhsiao/repo-picture-1/master/images/laravel_ecommerce/web_index_01.png)
+
+![composer install](https://raw.githubusercontent.com/zivhsiao/repo-picture-1/master/images/laravel_ecommerce/web_index_022.png)
+
+![composer install](https://raw.githubusercontent.com/zivhsiao/repo-picture-1/master/images/laravel_ecommerce/web_index_03.png)
+
+#### 這裏有我的操作模式
+
+![composer install](https://raw.githubusercontent.com/zivhsiao/repo-picture-1/master/images/laravel_ecommerce/Laravel_Ecommerce_Backbeat_Go_810.gif)
+
+
+這樣在結賬的畫面就很正常了，完全符合臺灣的口味了

@@ -191,7 +191,7 @@
             $('[data-toggle="tooltip"]').tooltip();
 
             var price = $('input[name="price"').val();
-            $('input[name="price"').val(price / 100);
+            $('input[name="price"').val(price);
         });
     </script>
 @stop

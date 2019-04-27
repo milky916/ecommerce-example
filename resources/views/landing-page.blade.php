@@ -47,13 +47,13 @@
             <div class="featured-section">
 
                 <div class="container">
-                    <h1 class="text-center">Laravel Ecommerce</h1>
+                    <h1 class="text-center">Laravel Demo Ecommerce</h1>
 
-                    <p class="section-description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore vitae nisi, consequuntur illum dolores cumque pariatur quis provident deleniti nesciunt officia est reprehenderit sunt aliquid possimus temporibus enim eum hic lorem.</p>
+                    <p class="section-description text-center">這是 DEMO 購物網站，希望你會喜歡！</p>
 
                     <div class="text-center button-container">
-                        <a href="#" class="button">Featured</a>
-                        <a href="#" class="button">On Sale</a>
+                        <a href="#" class="button">精選</a>
+                        <a href="#" class="button">拍賣</a>
                     </div>
 
                     {{-- <div class="tabs">
@@ -68,7 +68,7 @@
                     <div class="products text-center">
                         @foreach ($products as $product)
                             <div class="product">
-                                <a href="{{ route('shop.show', $product->slug) }}"><img src="{{ productImage($product->image) }}" alt="product"></a>
+                                <a href="{{ route('shop.show', $product->slug) }}"><img width="200" src="{{ productImage($product->image) }}" alt="product"></a>
                                 <a href="{{ route('shop.show', $product->slug) }}"><div class="product-name">{{ $product->name }}</div></a>
                                 <div class="product-price">{{ $product->presentPrice() }}</div>
                             </div>
